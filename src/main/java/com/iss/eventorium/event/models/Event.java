@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table (name = "events")
+@SQLRestriction("isDraft = false")
 @Entity
 public class Event {
 
@@ -52,7 +54,7 @@ public class Event {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")
-    private List<Activity> activities = new ArrayList<>();;
+    private List<Activity> activities = new ArrayList<>();
 
     @ManyToOne
     private User organizer;
