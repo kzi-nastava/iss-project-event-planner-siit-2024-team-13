@@ -19,16 +19,15 @@ import java.util.List;
 public class CategoryProposalController {
 
     private final CategoryProposalService categoryProposalService;
-    private final CategoryService categoryService;
 
     @GetMapping("/all")
     public ResponseEntity<List<CategoryResponseDto>> getPendingCategories() {
-        return ResponseEntity.ok(categoryService.getPendingCategories());
+        return ResponseEntity.ok(categoryProposalService.getPendingCategories());
     }
 
     @GetMapping
     public ResponseEntity<PagedResponse<CategoryResponseDto>> getPendingCategoriesPaged(Pageable pageable) {
-        return ResponseEntity.ok(categoryService.getPendingCategoriesPaged(pageable));
+        return ResponseEntity.ok(categoryProposalService.getPendingCategoriesPaged(pageable));
     }
 
     @PatchMapping("/{id}")

@@ -9,6 +9,7 @@ import com.iss.eventorium.category.repositories.CategoryRepository;
 import com.iss.eventorium.notifications.models.Notification;
 import com.iss.eventorium.notifications.models.NotificationType;
 import com.iss.eventorium.notifications.services.NotificationService;
+import com.iss.eventorium.shared.models.PagedResponse;
 import com.iss.eventorium.shared.models.Status;
 import com.iss.eventorium.solution.models.Solution;
 import com.iss.eventorium.solution.services.SolutionService;
@@ -16,9 +17,11 @@ import com.iss.eventorium.user.models.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -82,6 +85,16 @@ public class CategoryProposalService {
 
         sendChangeNotification(category, solution, request);
         return mapper.toResponse(solution.getCategory());
+    }
+
+    public List<CategoryResponseDto> getPendingCategories() {
+        return categoryRepository.findBySuggestedTrue().stream()
+                .map(mapper::toResponse)
+                .toList();
+    }
+
+    public PagedResponse<CategoryResponseDto> getPendingCategoriesPaged(Pageable pageable) {
+        return mapper.toPagedResponse(categoryRepository.findBySuggestedTrue(pageable));
     }
 
     public void handleCategoryProposal(Category category) {

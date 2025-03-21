@@ -76,16 +76,6 @@ public class CategoryService {
         categoryRepository.save(toDelete);
     }
 
-    public List<CategoryResponseDto> getPendingCategories() {
-        return categoryRepository.findBySuggestedTrue().stream()
-                .map(mapper::toResponse)
-                .toList();
-    }
-
-    public PagedResponse<CategoryResponseDto> getPendingCategoriesPaged(Pageable pageable) {
-        return mapper.toPagedResponse(categoryRepository.findBySuggestedTrue(pageable));
-    }
-
     public void ensureCategoryNameIsUnique(Category category) {
         if (categoryRepository.existsByNameIgnoreCase(category.getName())) {
             throw new CategoryAlreadyExistsException(String.format(CATEGORY_ALREADY_EXISTS_MESSAGE, category.getName()));
