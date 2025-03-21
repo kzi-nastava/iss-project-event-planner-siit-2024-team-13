@@ -25,16 +25,17 @@ INSERT INTO users (verified, city_id, suspended, activation_timestamp, address, 
 INSERT INTO USER_ROLE (user_id, role_id) VALUES (1, 5), (2, 4), (3, 3), (4,5), (5,5), (6,5);
 
 INSERT INTO categories (name, description, deleted, suggested) VALUES
-    ('Event Planning', 'Category for organizing event-related tasks',  false, false),
-    ('Catering', 'Food and beverages arrangements',   false, false),
-    ('Venue Booking', 'Booking venues for events',   false, false),
-    ('Photography', 'Photography and videography services',   false, false),
-    ('Entertainment', 'Music, shows, and performances',   false, false),
-    ('Logistics', 'Transport and materials management',   false, false),
-    ('Decoration', 'Venue decoration and themes',   false, false),
-    ('Security', 'Security and crowd control',   false, true),
-    ('Guest Management', 'Handling guest invitations and RSVP',   false, false),
-    ('Marketing', 'Promotions and event advertising',   false, false);
+    ('Event Planning', 'Category for organizing event-related tasks',false, false),
+    ('Catering', 'Food and beverages arrangements',false, false),
+    ('Venue Booking', 'Booking venues for events',false, false),
+    ('Photography', 'Photography and videography services',false, false),
+    ('Entertainment', 'Music, shows, and performances',false, false),
+    ('Logistics', 'Transport and materials management',false, false),
+    ('Decoration', 'Venue decoration and themes',false, false),
+    ('Security', 'Security and crowd control',false, true),
+    ('Guest Management', 'Handling guest invitations and RSVP',false, false),
+    ('Marketing', 'Promotions and event advertising',false, false),
+    ('Deleted', 'Deleted category',true, false);
 
 INSERT INTO event_types (name, description, deleted) VALUES
     ('Wedding', 'Event type for organizing weddings', false),

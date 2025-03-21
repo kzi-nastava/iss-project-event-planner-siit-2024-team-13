@@ -28,7 +28,7 @@ public class CategoryService {
 
     private final CategoryMapper mapper;
 
-    private static final String CATEGORY_ALREADY_EXISTS_MESSAGE = "Category with name %s already exists!";
+    private static final String CATEGORY_ALREADY_EXISTS_MESSAGE = "Category with name %s already exists";
 
     public List<CategoryResponseDto> getCategories() {
         return categoryRepository.findBySuggestedFalse().stream()
@@ -46,7 +46,7 @@ public class CategoryService {
 
     public CategoryResponseDto createCategory(CategoryRequestDto category) {
         if(categoryRepository.existsByNameIgnoreCase(category.getName())) {
-            throw new CategoryAlreadyExistsException(category.getName());
+            throw new CategoryAlreadyExistsException(String.format(CATEGORY_ALREADY_EXISTS_MESSAGE, category.getName()));
         }
         Category created = mapper.fromRequest(category);
         created.setSuggested(false);
