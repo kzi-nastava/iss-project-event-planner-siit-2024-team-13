@@ -81,7 +81,7 @@ public class CategoryProposalService {
 
         changeProposal(category);
         categoryRepository.save(category);
-        solutionService.setCategory(solution, categoryService.findByName(request.getName()));
+        solutionService.setCategory(solution, categoryService.findByName(request.getName().trim()));
 
         sendChangeNotification(category, solution, request);
         return mapper.toResponse(solution.getCategory());

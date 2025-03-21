@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,19 +115,36 @@ class CategoryControllerIntegrationTest {
                 .andExpect(jsonPath("$.description").value("Description"));
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({
+            "1,New Category,New Description",
+            "2,Catering,Description",
+            "3,New Name,Booking venues for events"
+    })
     @Transactional
-    void testUpdateCategory() throws Exception {
+    void testUpdateCategory(Long id, String name, String description) throws Exception {
         String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        CategoryRequestDto request = new CategoryRequestDto("New Category", "New Description");
-        mockMvc.perform(put("/api/v1/categories/{id}", 1L)
+        CategoryRequestDto request = new CategoryRequestDto(name, description);
+        mockMvc.perform(put("/api/v1/categories/{id}", id)
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.name").value("New Category"))
-                .andExpect(jsonPath("$.description").value("New Description"));
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value(name))
+                .andExpect(jsonPath("$.description").value(description));
+    }
+
+    @Test
+    void testUpdateCategory_shouldThrowCategoryAlreadyExistsException() throws Exception {
+        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
+        CategoryRequestDto request = new CategoryRequestDto("Catering", "New Description");
+        mockMvc.perform(put("/api/v1/categories/{id}", 1L)
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Category with name Catering already exists"));
     }
 
     @Test

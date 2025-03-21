@@ -1,5 +1,6 @@
 package com.iss.eventorium.util;
 
+import com.iss.eventorium.category.models.Category;
 import com.iss.eventorium.event.models.Event;
 import com.iss.eventorium.event.models.EventType;
 import com.iss.eventorium.event.models.Privacy;
@@ -42,6 +43,14 @@ public class EntityFactory {
                 .activities(new ArrayList<>())
                 .organizer(organizer)
                 .isDraft(false)
+                .build();
+    }
+
+    public static Category createCategory(String name, String description, boolean suggested) {
+        return Category.builder()
+                .name(name)
+                .description(description)
+                .suggested(suggested)
                 .build();
     }
 
