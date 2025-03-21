@@ -108,6 +108,10 @@ class CategoryRepositoryTest {
         entityManager.persist(createCategory("Category5", "Desc", false));
         entityManager.persist(createCategory("Category6", "Desc", true));
         entityManager.persist(createCategory("Special & Category", "Desc", true));
+        Category deletedCategory = createCategory("Deleted Category", "Desc", true);
+        deletedCategory.setDeleted(true);
+        entityManager.persist(deletedCategory);
+
     }
 
 }
