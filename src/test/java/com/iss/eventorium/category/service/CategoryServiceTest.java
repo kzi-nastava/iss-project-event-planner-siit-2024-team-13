@@ -64,7 +64,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    void getCategories() {
+    void testGetCategories() {
         when(categoryRepository.findBySuggestedFalse()).thenReturn(List.of(category));
         when(mapper.toResponse(category)).thenReturn(categoryResponseDto);
 
@@ -77,7 +77,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    void getCategory_shouldReturnCategory_whenExists() {
+    void testGetCategory_shouldReturnCategory_whenExists() {
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
         when(mapper.toResponse(category)).thenReturn(categoryResponseDto);
 
@@ -87,13 +87,13 @@ class CategoryServiceTest {
     }
 
     @Test
-    void getCategory_shouldThrowException_whenNotExists() {
+    void testGetCategory_shouldThrowException_whenNotExists() {
         when(categoryRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(EntityNotFoundException.class, () -> categoryService.getCategory(1L));
     }
 
     @Test
-    void createCategory_shouldCreateCategory_whenNameIsUnique() {
+    void testCreateCategory_shouldCreateCategory_whenNameIsUnique() {
         when(categoryRepository.existsByNameIgnoreCase("TestCategory")).thenReturn(false);
         when(mapper.fromRequest(categoryRequestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
@@ -106,13 +106,13 @@ class CategoryServiceTest {
     }
 
     @Test
-    void createCategory_shouldThrowException_whenNameAlreadyExists() {
+    void testCreateCategory_shouldThrowException_whenNameAlreadyExists() {
         when(categoryRepository.existsByNameIgnoreCase("TestCategory")).thenReturn(true);
         assertThrows(CategoryAlreadyExistsException.class, () -> categoryService.createCategory(categoryRequestDto));
     }
 
     @Test
-    void updateCategory_shouldUpdateCategory_whenValid() {
+    void testUpdateCategory_shouldUpdateCategory_whenValid() {
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
         when(categoryRepository.existsByNameIgnoreCase("TestCategory")).thenReturn(false);
         when(categoryRepository.save(category)).thenReturn(category);
@@ -125,14 +125,14 @@ class CategoryServiceTest {
     }
 
     @Test
-    void updateCategory_shouldThrowException_whenCategoryNotFound() {
+    void testUpdateCategory_shouldThrowException_whenCategoryNotFound() {
         when(categoryRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> categoryService.updateCategory(1L, categoryRequestDto));
     }
 
     @Test
-    void updateCategory_shouldThrowException_whenNameAlreadyExists() {
+    void testUpdateCategory_shouldThrowException_whenNameAlreadyExists() {
         Category toUpdate = Category.builder().name("New Category").description("New Description").build();
 
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(toUpdate));
@@ -142,7 +142,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    void deleteCategory_shouldDelete_whenNotInUse() {
+    void testDeleteCategory_shouldDelete_whenNotInUse() {
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
         when(solutionService.existsCategory(1L)).thenReturn(false);
 
@@ -154,7 +154,7 @@ class CategoryServiceTest {
     }
 
     @Test
-    void deleteCategory_shouldThrowException_whenInUse() {
+    void testDeleteCategory_shouldThrowException_whenInUse() {
         when(categoryRepository.findById(1L)).thenReturn(Optional.of(category));
         when(solutionService.existsCategory(1L)).thenReturn(true);
 
