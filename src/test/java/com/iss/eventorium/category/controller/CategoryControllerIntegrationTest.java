@@ -51,7 +51,7 @@ class CategoryControllerIntegrationTest {
     void testGetCategories() throws Exception {
         mockMvc.perform(get("/api/v1/categories/all"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(9));
+                .andExpect(jsonPath("$.length()").value(8));
     }
 
     @ParameterizedTest
@@ -167,7 +167,8 @@ class CategoryControllerIntegrationTest {
         mockMvc.perform(delete("/api/v1/categories/{id}", 1L)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Unable to delete category because it is currently associated with an active solution."));
+                .andExpect(jsonPath("$.message")
+                        .value("Unable to delete category because it is currently associated with an active solution."));
     }
 
     @Test

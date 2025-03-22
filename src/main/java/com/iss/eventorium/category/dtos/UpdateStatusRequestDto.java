@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateStatusRequestDto {
+
     @NotNull(message = "Status is mandatory")
     private Status status;
 }

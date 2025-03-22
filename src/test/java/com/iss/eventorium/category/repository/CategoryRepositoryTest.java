@@ -43,7 +43,7 @@ class CategoryRepositoryTest {
     })
     void testFindBySuggestedFalse_allTheSame(boolean suggested, int expected) {
         for(int i=0; i<expected; i++) {
-          entityManager.persist(createCategory("Name" + i, "Desc"+i, suggested));
+          entityManager.persist(createCategory("Name" + i, "Desc" + i, suggested));
         }
 
         List<Category> result = repository.findBySuggestedFalse();

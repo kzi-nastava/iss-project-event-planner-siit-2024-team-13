@@ -34,8 +34,10 @@ INSERT INTO categories (name, description, deleted, suggested) VALUES
     ('Decoration', 'Venue decoration and themes',false, false),
     ('Security', 'Security and crowd control',false, true),
     ('Guest Management', 'Handling guest invitations and RSVP',false, false),
-    ('Marketing', 'Promotions and event advertising',false, false),
-    ('Deleted', 'Deleted category',true, false);
+    ('Marketing', 'Promotions and event advertising',false, true),
+    ('Deleted', 'Deleted category',true, false),
+    ('Not Found', 'Category',false, true),
+    ('Not Pending', 'Category',false, true);
 
 INSERT INTO event_types (name, description, deleted) VALUES
     ('Wedding', 'Event type for organizing weddings', false),
@@ -71,11 +73,13 @@ VALUES
 
 INSERT INTO products (id, name, description, price, discount, status, is_available, is_deleted, is_visible, category_id, provider_id) VALUES
     (nextval('solution_sequence'), 'Custom Invitations', 'Beautifully designed customizable invitations for all events', 30.00, 50.00, 'ACCEPTED', TRUE, FALSE, TRUE, 9, 3),
-    (nextval('solution_sequence'), 'Event Banner', 'High-quality banners for event promotion', 50.00, 10.00, 'ACCEPTED', TRUE, FALSE, TRUE, 10, 3),
+    (nextval('solution_sequence'), 'Event Banner', 'High-quality banners for event promotion', 50.00, 10.00, 'PENDING', TRUE, FALSE, TRUE, 10, 3),
     (nextval('solution_sequence'), 'Party Favors', 'Unique and personalized party favors for any occasion', 20.0, 0.00, 'ACCEPTED', TRUE, FALSE, TRUE, 1, 3),
     (nextval('solution_sequence'), 'Decorative Balloons', 'Colorful balloons for all events', 10.00, 0.00, 'ACCEPTED', TRUE, FALSE, TRUE, 7, 3);
 
 INSERT INTO services (id, name, description, specialties, price, discount, status, is_available, is_deleted, is_visible, type, reservation_deadline, cancellation_deadline, min_duration, max_duration, category_id, provider_id) VALUES
     (nextval('solution_sequence'), 'Event Photography', 'Professional photography services for all types of events', 'Photography, Event', 150.00, 30.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 14, 3, 2, 6, 4, 3),
     (nextval('solution_sequence'), 'Catering Service', 'Delicious and customizable catering for events', 'Catering, Customizable', 500.00, 50.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 21, 5, 3, 8, 2, 3),
-    (nextval('solution_sequence'), 'Event Planning', 'Comprehensive event planning services from start to finish', 'Event Planning, Full Service', 1200.00, 0.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 30, 10, 4, 10, 1, 3);
+    (nextval('solution_sequence'), 'Event Planning', 'Comprehensive event planning services from start to finish', 'Event Planning, Full Service', 1200.00, 0.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 30, 10, 4, 10, 1, 3),
+    (nextval('solution_sequence'), 'Transportation Service', 'Event transportation services for guests and equipment', 'Transportation, Event', 350.00, 60.00, 'PENDING', TRUE, FALSE, TRUE, 'MANUAL', 14, 5, 3, 7, 8, 3),
+    (nextval('solution_sequence'), 'Invalid Service', 'Invalid service record', 'Throws specific exception', 350.00, 60.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 14, 5, 3, 7, 13, 3);

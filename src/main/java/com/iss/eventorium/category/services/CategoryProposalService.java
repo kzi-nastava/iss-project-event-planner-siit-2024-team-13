@@ -63,7 +63,7 @@ public class CategoryProposalService {
         Category category = getCategoryProposal(categoryId);
 
         if (categoryService.checkCategoryExistence(category, request.getName()))
-            throw new CategoryAlreadyExistsException("Category with name " + category.getName() + " already exists!");
+            throw new CategoryAlreadyExistsException("Category with name '" + request.getName() + "' already exists");
 
         Solution solution = getSolutionProposal(category);
         updateCategoryProposal(category, request);
@@ -81,7 +81,7 @@ public class CategoryProposalService {
 
         changeProposal(category);
         categoryRepository.save(category);
-        solutionService.setCategory(solution, categoryService.findByName(request.getName().trim()));
+        solutionService.setCategory(solution, categoryService.findByName(request.getName()));
 
         sendChangeNotification(category, solution, request);
         return mapper.toResponse(solution.getCategory());

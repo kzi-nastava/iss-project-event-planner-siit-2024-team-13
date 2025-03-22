@@ -10,22 +10,24 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.stream.Stream;
+
 import static com.iss.eventorium.util.TestUtil.*;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -191,14 +193,9 @@ class BudgetControllerIntegrationTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            "/api/v1/events/{event-id}/budget",
-            "/api/v1/events/{event-id}/budget/purchase",
-            "/api/v1/events/{event-id}/budget/budget-items",
-            "/api/v1/budget-items"
-    })
-    void testUnauthorizedAccess(String urlTemplate) throws Exception {
-        mockMvc.perform(get(urlTemplate, EVENT_WITH_BUDGET))
+    @MethodSource("unauthorizedEndpoints")
+    void testUnauthorizedAccess(HttpMethod method, String urlTemplate) throws Exception {
+        mockMvc.perform(request(method, urlTemplate, EVENT_WITH_BUDGET))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -209,6 +206,15 @@ class BudgetControllerIntegrationTest {
                 .itemType(SolutionType.PRODUCT)
                 .category(CategoryResponseDto.builder().id(7L).build())
                 .build();
+    }
+
+    private static Stream<Arguments> unauthorizedEndpoints() {
+        return Stream.of(
+                Arguments.of(HttpMethod.GET, "/api/v1/events/{event-id}/budget"),
+                Arguments.of(HttpMethod.POST, "/api/v1/events/{event-id}/budget/purchase"),
+                Arguments.of(HttpMethod.GET, "/api/v1/events/{event-id}/budget/budget-items"),
+                Arguments.of(HttpMethod.GET, "/api/v1/budget-items")
+        );
     }
 
 }

@@ -6,6 +6,7 @@ import com.iss.eventorium.category.dtos.UpdateStatusRequestDto;
 import com.iss.eventorium.category.services.CategoryProposalService;
 import com.iss.eventorium.category.services.CategoryService;
 import com.iss.eventorium.shared.models.PagedResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class CategoryProposalController {
     @PatchMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> updateCategoryStatus(
             @PathVariable Long id,
-            @RequestBody UpdateStatusRequestDto dto
+            @Valid @RequestBody UpdateStatusRequestDto dto
     ) {
         return ResponseEntity.ok(categoryProposalService.updateCategoryStatus(id, dto.getStatus()));
     }
@@ -41,7 +42,7 @@ public class CategoryProposalController {
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> updateCategoryProposal(
             @PathVariable Long id,
-            @RequestBody CategoryRequestDto dto
+            @Valid @RequestBody CategoryRequestDto dto
     ) {
         return ResponseEntity.ok(categoryProposalService.updateCategoryProposal(id, dto));
     }
@@ -49,7 +50,7 @@ public class CategoryProposalController {
     @PutMapping("/{id}/change")
     public ResponseEntity<CategoryResponseDto> changeCategoryProposal(
             @PathVariable Long id,
-            @RequestBody CategoryRequestDto dto
+            @Valid @RequestBody CategoryRequestDto dto
     ) {
         return ResponseEntity.ok(categoryProposalService.changeCategoryProposal(id, dto));
     }
