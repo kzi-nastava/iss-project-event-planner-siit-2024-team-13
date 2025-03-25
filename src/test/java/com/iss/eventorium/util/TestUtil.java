@@ -19,10 +19,13 @@ public class TestUtil {
     public static final LoginRequestDto PROVIDER_LOGIN = new LoginRequestDto("provider@gmail.com", "pera");
     public static final CategoryResponseDto VALID_CATEGORY = new CategoryResponseDto(2L, "Catering", "Food and beverages arrangements");
 
-    public static final Long EVENT_WITH_BUDGET = 1L;
-    public static final Long EVENT_WITHOUT_BUDGET = 6L;
-    public static final Long INVALID_EVENT = 500L;
-    public static final Long INVALID_PRODUCT = 500L;
+    public static final Long EVENT_WITH_BUDGET_ID = 1L;
+    public static final Long EVENT_WITHOUT_BUDGET_ID = 6L;
+    public static final Long INVALID_EVENT_ID = 500L;
+    public static final Long INVALID_PRODUCT_ID = 500L;
+    public static final Long INVALID_SERVICE_ID = 500L;
+    public static final Long SERVICE_WITH_RESERVATION_ID = 8L;
+    public static final Long VALID_SERVICE_ID = 7L;
 
     public static String login(MockMvc mockMvc, ObjectMapper objectMapper, LoginRequestDto request) throws Exception {
         MvcResult result = mockMvc.perform(post("/api/v1/auth/login")

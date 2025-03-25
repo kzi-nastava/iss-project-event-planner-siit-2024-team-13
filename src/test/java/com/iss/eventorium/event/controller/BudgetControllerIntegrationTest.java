@@ -57,7 +57,7 @@ class BudgetControllerIntegrationTest {
     @Test
     void testGetBudget() throws Exception {
         String token = login(mockMvc, objectMapper, ORGANIZER_LOGIN);
-        mockMvc.perform(get("/api/v1/events/{event-id}/budget", EVENT_WITH_BUDGET)
+        mockMvc.perform(get("/api/v1/events/{event-id}/budget", EVENT_WITH_BUDGET_ID)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.plannedAmount").value(85.0))
@@ -67,7 +67,7 @@ class BudgetControllerIntegrationTest {
     @Test
     void testGetBudget_eventDoesNotExist() throws Exception {
         String token = login(mockMvc, objectMapper, ORGANIZER_LOGIN);
-        mockMvc.perform(get("/api/v1/events/{event-id}/budget", INVALID_EVENT)
+        mockMvc.perform(get("/api/v1/events/{event-id}/budget", INVALID_EVENT_ID)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Event not found"));
@@ -77,7 +77,7 @@ class BudgetControllerIntegrationTest {
     @Transactional
     void testGetBudget_shouldCreateNewBudget() throws Exception {
         String token = login(mockMvc, objectMapper, ORGANIZER_LOGIN);
-        mockMvc.perform(get("/api/v1/events/{event-id}/budget", EVENT_WITHOUT_BUDGET)
+        mockMvc.perform(get("/api/v1/events/{event-id}/budget", EVENT_WITHOUT_BUDGET_ID)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.plannedAmount").value(0.0))
@@ -90,7 +90,7 @@ class BudgetControllerIntegrationTest {
         String token = login(mockMvc, objectMapper, ORGANIZER_LOGIN);
         BudgetItemRequestDto request = createBudgetItemRequest(10.0);
 
-        mockMvc.perform(post("/api/v1/events/{event-id}/budget/purchase", EVENT_WITH_BUDGET)
+        mockMvc.perform(post("/api/v1/events/{event-id}/budget/purchase", EVENT_WITH_BUDGET_ID)
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -107,7 +107,7 @@ class BudgetControllerIntegrationTest {
         String token = login(mockMvc, objectMapper, ORGANIZER_LOGIN);
         BudgetItemRequestDto request = createBudgetItemRequest(9.0);
 
-        mockMvc.perform(post("/api/v1/events/{event-id}/budget/purchase", EVENT_WITH_BUDGET)
+        mockMvc.perform(post("/api/v1/events/{event-id}/budget/purchase", EVENT_WITH_BUDGET_ID)
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -126,7 +126,7 @@ class BudgetControllerIntegrationTest {
                 .category(CategoryResponseDto.builder().id(9L).build())
                 .build();
 
-        mockMvc.perform(post("/api/v1/events/{event-id}/budget/purchase", EVENT_WITH_BUDGET)
+        mockMvc.perform(post("/api/v1/events/{event-id}/budget/purchase", EVENT_WITH_BUDGET_ID)
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -140,12 +140,12 @@ class BudgetControllerIntegrationTest {
         String token = login(mockMvc, objectMapper, ORGANIZER_LOGIN);
         BudgetItemRequestDto request = BudgetItemRequestDto.builder()
                 .plannedAmount(1000.0)
-                .itemId(INVALID_PRODUCT)
+                .itemId(INVALID_PRODUCT_ID)
                 .itemType(SolutionType.PRODUCT)
                 .category(CategoryResponseDto.builder().id(9L).build())
                 .build();
 
-        mockMvc.perform(post("/api/v1/events/{event-id}/budget/purchase", EVENT_WITH_BUDGET)
+        mockMvc.perform(post("/api/v1/events/{event-id}/budget/purchase", EVENT_WITH_BUDGET_ID)
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -158,7 +158,7 @@ class BudgetControllerIntegrationTest {
     @Transactional
     void testPurchaseProduct_invalidRequest_shouldThrowValidationError(BudgetItemRequestDto request) throws Exception {
         String token = login(mockMvc, objectMapper, ORGANIZER_LOGIN);
-        mockMvc.perform(post("/api/v1/events/{event-id}/budget/purchase", EVENT_WITH_BUDGET)
+        mockMvc.perform(post("/api/v1/events/{event-id}/budget/purchase", EVENT_WITH_BUDGET_ID)
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
@@ -173,7 +173,7 @@ class BudgetControllerIntegrationTest {
     void testPurchaseProduct_eventDoesNotExist() throws Exception {
         String token = login(mockMvc, objectMapper, ORGANIZER_LOGIN);
         BudgetItemRequestDto request = createBudgetItemRequest(1000.0);
-        mockMvc.perform(get("/api/v1/events/{event-id}/budget", INVALID_EVENT)
+        mockMvc.perform(get("/api/v1/events/{event-id}/budget", INVALID_EVENT_ID)
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -194,7 +194,7 @@ class BudgetControllerIntegrationTest {
     @ParameterizedTest
     @MethodSource("unauthorizedEndpoints")
     void testUnauthorizedAccess(HttpMethod method, String urlTemplate) throws Exception {
-        mockMvc.perform(request(method, urlTemplate, EVENT_WITH_BUDGET))
+        mockMvc.perform(request(method, urlTemplate, EVENT_WITH_BUDGET_ID))
                 .andExpect(status().isUnauthorized());
     }
 

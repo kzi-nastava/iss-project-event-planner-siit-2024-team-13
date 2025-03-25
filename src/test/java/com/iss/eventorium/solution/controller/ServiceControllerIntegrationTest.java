@@ -89,7 +89,6 @@ class ServiceControllerIntegrationTest {
                         .header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value(request.getName()))
                 .andExpect(jsonPath("$.description").value(request.getDescription()))
@@ -132,6 +131,38 @@ class ServiceControllerIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @Transactional
+    void testDeleteService() throws Exception {
+        String token = login(mockMvc, objectMapper, PROVIDER_LOGIN);
+        mockMvc.perform(delete("/api/v1/services/{id}", VALID_SERVICE_ID)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @Transactional
+    void testDeleteService_hasReservation_shouldThrowServiceAlreadyReserved() throws Exception {
+        String token = login(mockMvc, objectMapper, PROVIDER_LOGIN);
+        mockMvc.perform(delete("/api/v1/services/{id}", SERVICE_WITH_RESERVATION_ID)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message")
+                        .value("The service cannot be deleted because it is currently reserved."));
+    }
+
+    @Test
+    @Transactional
+    void testDeleteService_invalidService_shouldThrowEntityNotFound() throws Exception {
+        String token = login(mockMvc, objectMapper, PROVIDER_LOGIN);
+        mockMvc.perform(delete("/api/v1/services/{id}", INVALID_SERVICE_ID)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message")
+                        .value("Service not found"));
+    }
+
+
     @ParameterizedTest
     @MethodSource("unauthorizedEndpoints")
     @Transactional
@@ -144,9 +175,8 @@ class ServiceControllerIntegrationTest {
     private static Stream<Arguments> unauthorizedEndpoints() {
         return Stream.of(
                 Arguments.of(HttpMethod.POST, "/api/v1/services"),
-                Arguments.of(HttpMethod.PUT, "/api/v1/services/10"),
-                Arguments.of(HttpMethod.DELETE, "/api/v1/services/10")
+                Arguments.of(HttpMethod.PUT, "/api/v1/services/7"),
+                Arguments.of(HttpMethod.DELETE, "/api/v1/services/7")
         );
     }
-
 }

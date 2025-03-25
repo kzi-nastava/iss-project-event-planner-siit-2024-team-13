@@ -48,7 +48,6 @@ INSERT INTO budgets VALUES (85.0, 80.0), (20.0, 20.0), (20.0, 20.0), (20.0, 20.0
 
 INSERT INTO solutions_history VALUES (1);
 
-
 INSERT INTO budget_items (planned_amount, category_id, purchased, solution_id, item_type) VALUES
     (20.0,9,CURRENT_DATE, 1, 'PRODUCT'),
     (45.0, 10, CURRENT_DATE, 2, 'PRODUCT'),
@@ -86,3 +85,8 @@ INSERT INTO services (id, name, description, specialties, price, discount, statu
     (nextval('solution_sequence'), 'Event Planning', 'Comprehensive event planning services from start to finish', 'Event Planning, Full Service', 1200.00, 0.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 30, 10, 4, 10, 1, 3),
     (nextval('solution_sequence'), 'Transportation Service', 'Event transportation services for guests and equipment', 'Transportation, Event', 350.00, 60.00, 'PENDING', TRUE, FALSE, TRUE, 'MANUAL', 14, 5, 3, 7, 8, 3),
     (nextval('solution_sequence'), 'Invalid Service', 'Invalid service record', 'Throws specific exception', 350.00, 60.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 14, 5, 3, 7, 13, 3);
+
+
+INSERT INTO service_reservations (ending_time, is_canceled, starting_time, event_id, service_id, status)
+VALUES
+    ('18:50:53', False, '17:50:53', 5, 8, 'ACCEPTED');
