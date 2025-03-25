@@ -1,10 +1,15 @@
 package com.iss.eventorium.util;
 
+import com.iss.eventorium.category.dtos.CategoryRequestDto;
+import com.iss.eventorium.category.dtos.CategoryResponseDto;
 import com.iss.eventorium.category.models.Category;
+import com.iss.eventorium.event.dtos.eventtype.EventTypeResponseDto;
 import com.iss.eventorium.event.models.Event;
 import com.iss.eventorium.event.models.EventType;
 import com.iss.eventorium.event.models.Privacy;
 import com.iss.eventorium.shared.models.City;
+import com.iss.eventorium.solution.dtos.services.CreateServiceRequestDto;
+import com.iss.eventorium.solution.models.ReservationType;
 import com.iss.eventorium.user.models.Person;
 import com.iss.eventorium.user.models.Role;
 import com.iss.eventorium.user.models.User;
@@ -61,6 +66,26 @@ public class EntityFactory {
                 .deleted(false)
                 .build();
     }
+
+    public static CreateServiceRequestDto createServiceRequest(CategoryResponseDto category) {
+        return CreateServiceRequestDto.builder()
+                .name("New Service")
+                .description("New Description")
+                .specialties("New Specialties")
+                .eventTypes(List.of(EventTypeResponseDto.builder().id(1L).build()))
+                .price(100.0)
+                .discount(0.0)
+                .category(category)
+                .type(ReservationType.AUTOMATIC)
+                .reservationDeadline(30)
+                .cancellationDeadline(20)
+                .minDuration(5)
+                .maxDuration(5)
+                .isAvailable(true)
+                .isVisible(true)
+                .build();
+    }
+
 
     private static Person createPerson() {
         return Person.builder()

@@ -2,6 +2,7 @@ package com.iss.eventorium.solution.services;
 
 import com.iss.eventorium.category.models.Category;
 import com.iss.eventorium.category.services.CategoryProposalService;
+import com.iss.eventorium.category.services.CategoryService;
 import com.iss.eventorium.event.models.Event;
 import com.iss.eventorium.company.repositories.CompanyRepository;
 import com.iss.eventorium.event.models.EventType;
@@ -54,12 +55,10 @@ public class ServiceService {
     private final EventTypeRepository eventTypeRepository;
     private final ReservationRepository reservationRepository;
     private final HistoryService historyService;
+    private final CategoryService categoryService;
     private final CategoryProposalService categoryProposalService;
 
     private final ServiceMapper mapper;
-    
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Value("${image-path}")
     private String imagePath;
@@ -113,7 +112,7 @@ public class ServiceService {
             categoryProposalService.handleCategoryProposal(service.getCategory());
         } else {
             service.setStatus(Status.ACCEPTED);
-            Category category = entityManager.getReference(Category.class, service.getCategory().getId());
+            Category category = categoryService.find(service.getCategory().getId());
             service.setCategory(category);
         }
         service.setProvider(authService.getCurrentUser());

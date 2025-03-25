@@ -46,6 +46,9 @@ INSERT INTO event_types (name, description, deleted) VALUES
 
 INSERT INTO budgets VALUES (85.0, 80.0), (20.0, 20.0), (20.0, 20.0), (20.0, 20.0), (20.0, 20.0);
 
+INSERT INTO solutions_history VALUES (1);
+
+
 INSERT INTO budget_items (planned_amount, category_id, purchased, solution_id, item_type) VALUES
     (20.0,9,CURRENT_DATE, 1, 'PRODUCT'),
     (45.0, 10, CURRENT_DATE, 2, 'PRODUCT'),

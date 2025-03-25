@@ -186,8 +186,7 @@ class BudgetControllerIntegrationTest {
     void getAllBudgetItems(LoginRequestDto loginRequest, int expectedSize) throws Exception {
         String token = login(mockMvc, objectMapper, loginRequest);
         mockMvc.perform(get("/api/v1/budget-items")
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(expectedSize));
     }

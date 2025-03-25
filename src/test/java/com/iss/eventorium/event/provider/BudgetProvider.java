@@ -15,9 +15,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class BudgetProvider {
+import static com.iss.eventorium.util.TestUtil.VALID_CATEGORY;
 
-    private static final CategoryResponseDto VALID_CATEGORY = new CategoryResponseDto(2L, "Catering", "Food and beverages arrangements");
+public class BudgetProvider {
 
     public static Stream<Arguments> provideBudgetItems() {
         return Stream.of(

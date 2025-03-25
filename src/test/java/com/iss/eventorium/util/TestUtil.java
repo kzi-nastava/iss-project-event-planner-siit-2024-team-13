@@ -1,6 +1,7 @@
 package com.iss.eventorium.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iss.eventorium.category.dtos.CategoryResponseDto;
 import com.iss.eventorium.user.dtos.auth.LoginRequestDto;
 import com.iss.eventorium.user.dtos.auth.UserTokenState;
 import org.springframework.http.MediaType;
@@ -15,6 +16,9 @@ public class TestUtil {
 
     public static final LoginRequestDto ORGANIZER_LOGIN = new LoginRequestDto("organizer@gmail.com", "pera");
     public static final LoginRequestDto ADMIN_LOGIN = new LoginRequestDto("admin@gmail.com", "pera");
+    public static final LoginRequestDto PROVIDER_LOGIN = new LoginRequestDto("provider@gmail.com", "pera");
+    public static final CategoryResponseDto VALID_CATEGORY = new CategoryResponseDto(2L, "Catering", "Food and beverages arrangements");
+
     public static final Long EVENT_WITH_BUDGET = 1L;
     public static final Long EVENT_WITHOUT_BUDGET = 6L;
     public static final Long INVALID_EVENT = 500L;
