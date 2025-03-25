@@ -3,12 +3,15 @@ package com.iss.eventorium.solution.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iss.eventorium.category.dtos.CategoryResponseDto;
 import com.iss.eventorium.solution.dtos.services.CreateServiceRequestDto;
+import com.iss.eventorium.solution.dtos.services.ServiceFilterDto;
 import jakarta.servlet.Filter;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -160,6 +163,55 @@ class ServiceControllerIntegrationTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message")
                         .value("Service not found"));
+    }
+
+    @Test
+    void testGetService() throws Exception {
+        mockMvc.perform(get("/api/v1/services/{id}", 7))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.id").value(VALID_SERVICE_ID))
+                .andExpect(jsonPath("$.name").value("Event Planning"))
+                .andExpect(jsonPath("$.description").value("Comprehensive event planning services from start to finish"))
+                .andExpect(jsonPath("$.provider.id").value(3L));
+    }
+
+    @Test
+    void testGetService_invalidService_shouldThrowEntityNotFound() throws Exception {
+        mockMvc.perform(get("/api/v1/services/{id}", INVALID_SERVICE_ID))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Service not found"));
+    }
+
+    @Test
+    void testGetAllServices() throws Exception {
+        mockMvc.perform(get("/api/v1/services/all"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(4));
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/data/service_search_test.csv")
+    void testSearchService(String keyword, int expected) throws Exception {
+        mockMvc.perform(get("/api/v1/services/search/all?keyword={keyword}", keyword))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(expected));
+    }
+
+    @ParameterizedTest
+    @MethodSource("com.iss.eventorium.solution.provider.ServiceProvider#provideServiceFilterCases")
+    void testFilterServices(ServiceFilterDto filter, int expected) throws Exception {
+        mockMvc.perform(get("/api/v1/services/filter/all")
+                .param("name", filter.getName())
+                .param("description", filter.getDescription())
+                .param("type", filter.getType())
+                .param("category", filter.getCategory())
+                .param("availability", filter.getAvailability() != null ? filter.getAvailability().toString() : null)
+                .param("minPrice", filter.getMinPrice() != null ? filter.getMinPrice().toString() : null)
+                .param("maxPrice", filter.getMaxPrice() != null ? filter.getMaxPrice().toString() : null))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(jsonPath("$.length()").value(expected));
     }
 
 

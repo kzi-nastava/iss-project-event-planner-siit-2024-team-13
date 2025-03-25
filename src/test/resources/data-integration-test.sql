@@ -24,6 +24,15 @@ INSERT INTO users (verified, city_id, suspended, activation_timestamp, address, 
 
 INSERT INTO USER_ROLE (user_id, role_id) VALUES (1, 5), (2, 4), (3, 3), (4,5), (5,5), (6,5);
 
+INSERT INTO companies (city_id, closing_hours, opening_hours, address, description, email, name, phone_number, provider_id)
+VALUES
+    (3, '9:00 pm', '9:00 am', 'Dositejeva, 6',
+     'Event Masters is your go-to partner for planning all types of events. ' ||
+     'From creating custom invitations and event banners to full-scale coordination, ' ||
+     'we bring your vision to life with precision and creativity. Contact us to make your event unforgettable.',
+     'info@eventmasters.com',
+     'Event Masters', '+15551234567', 3);
+
 INSERT INTO categories (name, description, deleted, suggested) VALUES
     ('Event Planning', 'Category for organizing event-related tasks',false, false),
     ('Catering', 'Food and beverages arrangements',false, false),
@@ -90,3 +99,6 @@ INSERT INTO services (id, name, description, specialties, price, discount, statu
 INSERT INTO service_reservations (ending_time, is_canceled, starting_time, event_id, service_id, status)
 VALUES
     ('18:50:53', False, '17:50:53', 5, 8, 'ACCEPTED');
+
+INSERT INTO solution_event_types (solution_id, event_type_id) VALUES
+    (5,1), (5,3), (6,2), (7,3), (7,1), (8,1), (9,1), (9,3);

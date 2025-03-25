@@ -16,21 +16,22 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.iss.eventorium.util.TestUtil.VALID_CATEGORY;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class BudgetProvider {
 
     public static Stream<Arguments> provideBudgetItems() {
         return Stream.of(
-                Arguments.of(new LoginRequestDto("organizer@gmail.com", "pera"), 3),
-                Arguments.of(new LoginRequestDto("organizer2@gmail.com", "pera"), 2),
-                Arguments.of(new LoginRequestDto("organizer3@gmail.com", "pera"), 1)
+                arguments(new LoginRequestDto("organizer@gmail.com", "pera"), 3),
+                arguments(new LoginRequestDto("organizer2@gmail.com", "pera"), 2),
+                arguments(new LoginRequestDto("organizer3@gmail.com", "pera"), 1)
         );
     }
 
     public static Stream<Arguments> provideInvalidBudgetItems() {
         return Stream.of(
-                Arguments.of(BudgetItemRequestDto.builder().build()),
-                Arguments.of(
+                arguments(BudgetItemRequestDto.builder().build()),
+                arguments(
                     BudgetItemRequestDto.builder()
                             .itemId(1L)
                             .category(VALID_CATEGORY)
@@ -38,21 +39,21 @@ public class BudgetProvider {
                             .itemType(SolutionType.PRODUCT)
                             .build()
                 ),
-                Arguments.of(
+                arguments(
                         BudgetItemRequestDto.builder()
                                 .category(VALID_CATEGORY)
                                 .plannedAmount(1000.0)
                                 .itemType(SolutionType.PRODUCT)
                                 .build()
                 ),
-                Arguments.of(
+                arguments(
                         BudgetItemRequestDto.builder()
                                 .itemId(1L)
                                 .category(VALID_CATEGORY)
                                 .itemType(SolutionType.PRODUCT)
                                 .build()
                 ),
-                Arguments.of(
+                arguments(
                         BudgetItemRequestDto.builder()
                                 .itemId(1L)
                                 .plannedAmount(1000.0)
@@ -83,10 +84,10 @@ public class BudgetProvider {
         Event eventWithoutBudget = new Event();
 
         return Stream.of(
-                Arguments.of(Collections.emptyList(), 0),
-                Arguments.of(List.of(eventWithoutBudget), 0),
-                Arguments.of(List.of(event1), 1),
-                Arguments.of(List.of(event1, event2), 2)
+                arguments(Collections.emptyList(), 0),
+                arguments(List.of(eventWithoutBudget), 0),
+                arguments(List.of(event1), 1),
+                arguments(List.of(event1, event2), 2)
         );
     }
 

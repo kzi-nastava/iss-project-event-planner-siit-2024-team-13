@@ -3,12 +3,14 @@ package com.iss.eventorium.solution.provider;
 
 import com.iss.eventorium.category.dtos.CategoryRequestDto;
 import com.iss.eventorium.solution.dtos.services.CreateServiceRequestDto;
+import com.iss.eventorium.solution.dtos.services.ServiceFilterDto;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
 import static com.iss.eventorium.util.EntityFactory.createServiceRequest;
 import static com.iss.eventorium.util.TestUtil.VALID_CATEGORY;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class ServiceProvider {
 
@@ -30,13 +32,33 @@ public class ServiceProvider {
         invalidDeadLines.setCancellationDeadline(-1);
 
         return Stream.of(
-                Arguments.of(new CreateServiceRequestDto()),
-                Arguments.of(createServiceRequest(null)),
-                Arguments.of(invalidDeadLines),
-                Arguments.of(invalidDiscount),
-                Arguments.of(invalidPrice),
-                Arguments.of(invalidMaxDuration),
-                Arguments.of(invalidMinDuration)
+                arguments(new CreateServiceRequestDto()),
+                arguments(createServiceRequest(null)),
+                arguments(invalidDeadLines),
+                arguments(invalidDiscount),
+                arguments(invalidPrice),
+                arguments(invalidMaxDuration),
+                arguments(invalidMinDuration)
+        );
+    }
+
+    public static Stream<Arguments> provideServiceFilterCases() {
+        return Stream.of(
+                arguments(new ServiceFilterDto("Event", null, null, null, null, null, null), 2),
+                arguments(new ServiceFilterDto("Photography", null, null, null, null, null, null), 1),
+                arguments(new ServiceFilterDto("Catering", null, null, null, null, null, null), 1),
+                arguments(new ServiceFilterDto("Planning", null, null, null, null, null, null), 1),
+                arguments(new ServiceFilterDto("Transportation", null, null, null, null, null, null), 0),
+                arguments(new ServiceFilterDto("Service", null, null, null, null, null, null), 2),
+                arguments(new ServiceFilterDto("Invalid", null, null, null, null, null, null), 1),
+                arguments(new ServiceFilterDto(null, null, "Birthday Party", null, null, null, null), 3),
+                arguments(new ServiceFilterDto(null, null, null, "Photography", null, null, null), 1),
+                arguments(new ServiceFilterDto(null, null, null, "Catering", null, null, null), 1),
+                arguments(new ServiceFilterDto(null, null, null, "Event Planning", null, null, null), 1),
+                arguments(new ServiceFilterDto(null, null, null, null, true, null, null), 4),
+                arguments(new ServiceFilterDto(null, null, null, null, null, 100.0, 200.0), 2),
+                arguments(new ServiceFilterDto(null, null, null, null, null, 500.0, 1500.0), 1),
+                arguments(new ServiceFilterDto(null, null, null, null, null, 300.0, 400.0), 0)
         );
     }
 
