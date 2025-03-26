@@ -51,12 +51,13 @@ public class ServiceService {
     private final ServiceRepository repository;
     private final AuthService authService;
     private final EventService eventService;
-    private final CompanyRepository companyRepository;
-    private final EventTypeRepository eventTypeRepository;
-    private final ReservationRepository reservationRepository;
     private final HistoryService historyService;
     private final CategoryService categoryService;
     private final CategoryProposalService categoryProposalService;
+
+    private final CompanyRepository companyRepository;
+    private final EventTypeRepository eventTypeRepository;
+    private final ReservationRepository reservationRepository;
 
     private final ServiceMapper mapper;
 
