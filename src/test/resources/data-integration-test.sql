@@ -31,7 +31,13 @@ VALUES
      'From creating custom invitations and event banners to full-scale coordination, ' ||
      'we bring your vision to life with precision and creativity. Contact us to make your event unforgettable.',
      'info@eventmasters.com',
-     'Event Masters', '+15551234567', 3);
+     'Event Masters', '+15551234567', 3),
+    (4, '5:00 pm', '7:00 am', 'Nemanjina, 15',
+     'Celebrate in style with Party Supplies Hub! Offering a wide range of balloons, party decorations, sound systems, and catering options. ' ||
+     'We are your one-stop shop for making every celebration unforgettable.',
+     'support@partysupplies.com',
+     'Party Supplies Hub', '+15554567890', 2);
+
 
 INSERT INTO categories (name, description, deleted, suggested) VALUES
     ('Event Planning', 'Category for organizing event-related tasks',false, false),
@@ -91,8 +97,8 @@ INSERT INTO products (id, name, description, price, discount, status, is_availab
 INSERT INTO services (id, name, description, specialties, price, discount, status, is_available, is_deleted, is_visible, type, reservation_deadline, cancellation_deadline, min_duration, max_duration, category_id, provider_id) VALUES
     (nextval('solution_sequence'), 'Event Photography', 'Professional photography services for all types of events', 'Photography, Event', 150.00, 30.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 14, 3, 2, 6, 4, 3),
     (nextval('solution_sequence'), 'Catering Service', 'Delicious and customizable catering for events', 'Catering, Customizable', 500.00, 50.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 21, 5, 3, 8, 2, 3),
-    (nextval('solution_sequence'), 'Event Planning', 'Comprehensive event planning services from start to finish', 'Event Planning, Full Service', 1200.00, 0.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 30, 10, 4, 10, 1, 3),
-    (nextval('solution_sequence'), 'Transportation Service', 'Event transportation services for guests and equipment', 'Transportation, Event', 350.00, 60.00, 'PENDING', TRUE, FALSE, TRUE, 'MANUAL', 14, 5, 3, 7, 8, 3),
+    (nextval('solution_sequence'), 'Event Planning', 'Comprehensive event planning services from start to finish', 'Event Planning, Full Service', 1200.00, 0.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 30, 10, 4, 10, 1, 2),
+    (nextval('solution_sequence'), 'Transportation Service', 'Event transportation services for guests and equipment', 'Transportation, Event', 350.00, 60.00, 'PENDING', TRUE, FALSE, TRUE, 'MANUAL', 14, 5, 3, 7, 8, 2),
     (nextval('solution_sequence'), 'Invalid Service', 'Invalid service record', 'Throws specific exception', 350.00, 60.00, 'ACCEPTED', TRUE, FALSE, TRUE, 'MANUAL', 14, 5, 3, 7, 13, 3);
 
 
@@ -102,3 +108,6 @@ VALUES
 
 INSERT INTO solution_event_types (solution_id, event_type_id) VALUES
     (5,1), (5,3), (6,2), (7,3), (7,1), (8,1), (9,1), (9,3);
+
+INSERT INTO users_favourite_services (favourite_services_id, user_id) VALUES
+    (5, 2), (6,2);

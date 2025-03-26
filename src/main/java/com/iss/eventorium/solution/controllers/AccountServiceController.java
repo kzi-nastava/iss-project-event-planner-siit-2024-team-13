@@ -69,9 +69,8 @@ public class AccountServiceController {
     }
 
     @PostMapping("/favourites/{id}")
-    public ResponseEntity<ServiceResponseDto> addFavouriteService(@PathVariable Long id) {
-        accountService.addFavouriteService(id);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<ServiceResponseDto> addFavouriteService(@PathVariable Long id) {;
+        return new ResponseEntity<>(accountService.addFavouriteService(id), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/favourites/{id}")

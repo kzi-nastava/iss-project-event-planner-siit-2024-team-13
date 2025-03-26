@@ -172,7 +172,7 @@ class ServiceControllerIntegrationTest {
                 .andExpect(jsonPath("$.id").value(VALID_SERVICE_ID))
                 .andExpect(jsonPath("$.name").value("Event Planning"))
                 .andExpect(jsonPath("$.description").value("Comprehensive event planning services from start to finish"))
-                .andExpect(jsonPath("$.provider.id").value(3L));
+                .andExpect(jsonPath("$.provider.id").value(2L));
     }
 
     @Test

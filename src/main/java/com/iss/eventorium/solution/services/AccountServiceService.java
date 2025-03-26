@@ -3,6 +3,7 @@ package com.iss.eventorium.solution.services;
 
 import com.iss.eventorium.shared.models.PagedResponse;
 import com.iss.eventorium.solution.dtos.services.ServiceFilterDto;
+import com.iss.eventorium.solution.dtos.services.ServiceResponseDto;
 import com.iss.eventorium.solution.dtos.services.ServiceSummaryResponseDto;
 import com.iss.eventorium.solution.mappers.ServiceMapper;
 import com.iss.eventorium.solution.models.Service;
@@ -66,7 +67,7 @@ public class AccountServiceService {
                 .toList();
     }
 
-    public void addFavouriteService(Long id) {
+    public ServiceResponseDto addFavouriteService(Long id) {
         Service service = find(id);
 
         List<Service> favouriteService = authService.getCurrentUser().getPerson().getFavouriteServices();
@@ -74,6 +75,7 @@ public class AccountServiceService {
             favouriteService.add(service);
             userRepository.save(authService.getCurrentUser());
         }
+        return mapper.toResponse(service);
     }
 
     public void removeFavouriteService(Long id) {
@@ -87,7 +89,7 @@ public class AccountServiceService {
     }
 
     public Service find(Long id) {
-        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Service not found."));
+        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Service not found"));
     }
 
     public Boolean isFavouriteService(Long id) {
