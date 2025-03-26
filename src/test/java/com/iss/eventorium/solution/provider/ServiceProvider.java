@@ -1,9 +1,9 @@
 package com.iss.eventorium.solution.provider;
 
 
-import com.iss.eventorium.category.dtos.CategoryRequestDto;
 import com.iss.eventorium.solution.dtos.services.CreateServiceRequestDto;
 import com.iss.eventorium.solution.dtos.services.ServiceFilterDto;
+import com.iss.eventorium.solution.dtos.services.UpdateServiceRequestDto;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 public class ServiceProvider {
 
-    public static Stream<Arguments> provideInvalidRequest() {
+    public static Stream<Arguments> provideInvalidCreateRequest() {
         CreateServiceRequestDto invalidMaxDuration = createServiceRequest(VALID_CATEGORY);
         invalidMaxDuration.setMaxDuration(50);
 
@@ -34,6 +34,33 @@ public class ServiceProvider {
         return Stream.of(
                 arguments(new CreateServiceRequestDto()),
                 arguments(createServiceRequest(null)),
+                arguments(invalidDeadLines),
+                arguments(invalidDiscount),
+                arguments(invalidPrice),
+                arguments(invalidMaxDuration),
+                arguments(invalidMinDuration)
+        );
+    }
+
+    public static Stream<Arguments> provideInvalidUpdateRequest() {
+        UpdateServiceRequestDto invalidMaxDuration = createServiceRequest();
+        invalidMaxDuration.setMaxDuration(50);
+
+        UpdateServiceRequestDto invalidMinDuration = createServiceRequest();
+        invalidMinDuration.setMinDuration(-10);
+
+        UpdateServiceRequestDto invalidPrice = createServiceRequest();
+        invalidPrice.setPrice(-10.0);
+
+        UpdateServiceRequestDto invalidDiscount = createServiceRequest();
+        invalidDiscount.setDiscount(101.0);
+
+        UpdateServiceRequestDto invalidDeadLines = createServiceRequest();
+        invalidDeadLines.setReservationDeadline(-1);
+        invalidDeadLines.setCancellationDeadline(-1);
+
+        return Stream.of(
+                arguments(new UpdateServiceRequestDto()),
                 arguments(invalidDeadLines),
                 arguments(invalidDiscount),
                 arguments(invalidPrice),

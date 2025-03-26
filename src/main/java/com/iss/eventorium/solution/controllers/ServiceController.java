@@ -40,7 +40,10 @@ public class ServiceController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<PagedResponse<ServiceSummaryResponseDto>> filterServices(@Valid @ModelAttribute ServiceFilterDto filter, Pageable pageable) {
+    public ResponseEntity<PagedResponse<ServiceSummaryResponseDto>> filterServices(
+            @Valid @ModelAttribute ServiceFilterDto filter,
+            Pageable pageable
+    ) {
         return ResponseEntity.ok(service.filter(filter, pageable));
     }
 
@@ -50,7 +53,10 @@ public class ServiceController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PagedResponse<ServiceSummaryResponseDto>>searchServicesPaged(@RequestParam String keyword, Pageable pageable) {
+    public ResponseEntity<PagedResponse<ServiceSummaryResponseDto>>searchServicesPaged(
+            @RequestParam String keyword,
+            Pageable pageable
+    ) {
         return ResponseEntity.ok(service.searchServices(keyword, pageable));
     }
 

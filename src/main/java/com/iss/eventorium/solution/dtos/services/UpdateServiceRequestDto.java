@@ -49,12 +49,12 @@ public class UpdateServiceRequestDto {
 
     @NotNull(message = "Min duration is mandatory")
     @Min(value = 1, message = "Min duration must be at least 1")
-    @Max(value = 24, message = "Min duration cannot exceed 100")
+    @Max(value = 24, message = "Min duration cannot exceed 24")
     private Integer minDuration;
 
     @NotNull(message = "Max duration is mandatory")
     @Min(value = 1, message = "Max duration must be at least 1")
-    @Max(value = 24, message = "Max duration cannot exceed 100")
+    @Max(value = 24, message = "Max duration cannot exceed 24")
     private Integer maxDuration;
 
     @NotNull(message = "Availability is mandatory")
