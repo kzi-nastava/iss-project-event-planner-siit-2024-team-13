@@ -47,15 +47,11 @@ class ServiceServiceTest {
     @MockBean
     private AuthService authService;
     @MockBean
-    private EventService eventService;
-    @MockBean
     private HistoryService historyService;
     @MockBean
     private CategoryService categoryService;
     @MockBean
     private CategoryProposalService categoryProposalService;
-    @MockBean
-    private CompanyRepository companyRepository;
     @MockBean
     private EventTypeRepository eventTypeRepository;
     @MockBean
@@ -65,8 +61,6 @@ class ServiceServiceTest {
 
     @Autowired
     private ServiceService service;
-    @Autowired
-    private ServiceRepository serviceRepository;
 
 
     @Test
