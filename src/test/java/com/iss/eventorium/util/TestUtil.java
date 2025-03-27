@@ -14,6 +14,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class TestUtil {
 
+    private TestUtil() {}
+
     public static final LoginRequestDto ORGANIZER_LOGIN = new LoginRequestDto("organizer@gmail.com", "pera");
     public static final LoginRequestDto ADMIN_LOGIN = new LoginRequestDto("admin@gmail.com", "pera");
     public static final LoginRequestDto PROVIDER_LOGIN = new LoginRequestDto("provider@gmail.com", "pera");

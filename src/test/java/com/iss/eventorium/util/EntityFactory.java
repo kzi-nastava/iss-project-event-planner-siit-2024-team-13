@@ -1,6 +1,5 @@
 package com.iss.eventorium.util;
 
-import com.iss.eventorium.category.dtos.CategoryRequestDto;
 import com.iss.eventorium.category.dtos.CategoryResponseDto;
 import com.iss.eventorium.category.models.Category;
 import com.iss.eventorium.event.dtos.eventtype.EventTypeResponseDto;
@@ -21,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 
 public class EntityFactory {
+
+    private EntityFactory() {}
 
     public static User createUser(String email, String hash, Role role) {
         return User.builder()
