@@ -7,9 +7,11 @@ import com.iss.eventorium.event.models.Event;
 import com.iss.eventorium.event.models.EventType;
 import com.iss.eventorium.event.models.Privacy;
 import com.iss.eventorium.shared.models.City;
+import com.iss.eventorium.shared.models.Status;
 import com.iss.eventorium.solution.dtos.services.CreateServiceRequestDto;
 import com.iss.eventorium.solution.dtos.services.UpdateServiceRequestDto;
 import com.iss.eventorium.solution.models.ReservationType;
+import com.iss.eventorium.solution.models.Service;
 import com.iss.eventorium.user.models.Person;
 import com.iss.eventorium.user.models.Role;
 import com.iss.eventorium.user.models.User;
@@ -103,6 +105,28 @@ public class EntityFactory {
                 .maxDuration(10)
                 .available(false)
                 .visible(false)
+                .build();
+    }
+
+    public static Service createService(String name, User provider, EventType eventType, Category category) {
+        return Service.builder()
+                .name(name)
+                .description("Description")
+                .specialties("Specialties")
+                .eventTypes(List.of(eventType))
+                .category(category)
+                .price(110.0)
+                .discount(10.0)
+                .type(ReservationType.MANUAL)
+                .reservationDeadline(20)
+                .cancellationDeadline(10)
+                .minDuration(1)
+                .maxDuration(10)
+                .status(Status.ACCEPTED)
+                .provider(provider)
+                .isAvailable(false)
+                .isVisible(false)
+                .isDeleted(false)
                 .build();
     }
 

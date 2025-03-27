@@ -82,6 +82,4 @@ class EventRepositoryTest {
         assertNotNull(events);
         assertEquals(expected, events.size());
     }
-
-
 }

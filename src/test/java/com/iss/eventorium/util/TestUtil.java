@@ -51,6 +51,7 @@ public class TestUtil {
         resetTable(jdbcTemplate, "cities");
         resetTable(jdbcTemplate, "users");
         resetTable(jdbcTemplate, "event_types");
+        resetTable(jdbcTemplate, "categories");
         resetTable(jdbcTemplate, "events");
     }
 

@@ -37,6 +37,7 @@ public class ServiceSpecification {
         return Specification
                 .where(hasName(keyword))
                 .and(hasProvider(user.getId()));
+
     }
 
     public static Specification<Service> filterByName(String keyword, User user) {
