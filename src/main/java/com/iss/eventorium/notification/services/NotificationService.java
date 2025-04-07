@@ -1,9 +1,9 @@
-package com.iss.eventorium.notifications.services;
+package com.iss.eventorium.notification.services;
 
-import com.iss.eventorium.notifications.repositories.NotificationRepository;
-import com.iss.eventorium.notifications.dtos.NotificationResponseDto;
-import com.iss.eventorium.notifications.mappers.NotificationMapper;
-import com.iss.eventorium.notifications.models.Notification;
+import com.iss.eventorium.notification.repositories.NotificationRepository;
+import com.iss.eventorium.notification.dtos.NotificationResponseDto;
+import com.iss.eventorium.notification.mappers.NotificationMapper;
+import com.iss.eventorium.notification.models.Notification;
 import com.iss.eventorium.user.models.User;
 import com.iss.eventorium.user.services.AuthService;
 import lombok.RequiredArgsConstructor;

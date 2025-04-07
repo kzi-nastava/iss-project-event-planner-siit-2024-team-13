@@ -1,4 +1,4 @@
-package com.iss.eventorium.notifications.models;
+package com.iss.eventorium.notification.models;
 
 import com.iss.eventorium.user.models.User;
 import jakarta.persistence.*;

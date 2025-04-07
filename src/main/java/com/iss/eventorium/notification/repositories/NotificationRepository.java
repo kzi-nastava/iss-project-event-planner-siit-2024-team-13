@@ -1,6 +1,6 @@
-package com.iss.eventorium.notifications.repositories;
+package com.iss.eventorium.notification.repositories;
 
-import com.iss.eventorium.notifications.models.Notification;
+import com.iss.eventorium.notification.models.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

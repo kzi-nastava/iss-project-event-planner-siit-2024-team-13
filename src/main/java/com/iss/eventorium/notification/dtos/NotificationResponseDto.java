@@ -1,6 +1,6 @@
-package com.iss.eventorium.notifications.dtos;
+package com.iss.eventorium.notification.dtos;
 
-import com.iss.eventorium.notifications.models.NotificationType;
+import com.iss.eventorium.notification.models.NotificationType;
 import lombok.*;
 import java.time.LocalDateTime;
 
