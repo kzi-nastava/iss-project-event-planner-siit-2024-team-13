@@ -132,7 +132,7 @@ class CategoryProposalServiceTest {
     @Test
     void testUpdateCategoryProposal_shouldThrowCategoryAlreadyExistsException() {
         when(categoryService.find(1L)).thenReturn(category);
-        when(categoryService.checkCategoryExistence(category, request.getName())).thenReturn(true);
+//        when(categoryService.checkCategoryExistence(category, request.getName())).thenReturn(true);
 
         assertThrows(CategoryAlreadyExistsException.class, () -> service.updateCategoryProposal(1L, request));
     }
@@ -140,7 +140,7 @@ class CategoryProposalServiceTest {
     @Test
     void testUpdateCategoryProposal() {
         when(categoryService.find(1L)).thenReturn(category);
-        when(categoryService.checkCategoryExistence(category, request.getName())).thenReturn(false);
+//        when(categoryService.checkCategoryExistence(category, request.getName())).thenReturn(false);
         when(solutionService.findSolutionByCategory(category)).thenReturn(solution);
         when(categoryRepository.save(any(Category.class))).thenReturn(category);
         when(mapper.toResponse(category)).thenReturn(response);

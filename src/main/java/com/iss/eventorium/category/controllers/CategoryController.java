@@ -1,5 +1,6 @@
 package com.iss.eventorium.category.controllers;
 
+import com.iss.eventorium.category.api.CategoryApi;
 import com.iss.eventorium.category.dtos.CategoryRequestDto;
 import com.iss.eventorium.category.dtos.CategoryResponseDto;
 import com.iss.eventorium.category.services.CategoryService;
@@ -16,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/categories")
 @RequiredArgsConstructor
-public class CategoryController {
+public class CategoryController implements CategoryApi {
 
     private final CategoryService categoryService;
 
@@ -42,8 +43,8 @@ public class CategoryController {
 
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> updateCategory(
-            @Valid @RequestBody CategoryRequestDto requestDto,
-            @PathVariable Long id
+            @PathVariable Long id,
+            @Valid @RequestBody CategoryRequestDto requestDto
     ) {
         return ResponseEntity.ok(categoryService.updateCategory(id, requestDto));
     }

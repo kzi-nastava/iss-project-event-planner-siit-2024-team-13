@@ -1,8 +1,10 @@
 package com.iss.eventorium.solution.controllers;
 
 import com.iss.eventorium.shared.dtos.ImageResponseDto;
+import com.iss.eventorium.shared.dtos.RemoveImageRequestDto;
 import com.iss.eventorium.shared.models.ImagePath;
 import com.iss.eventorium.shared.models.PagedResponse;
+import com.iss.eventorium.solution.api.ServiceApi;
 import com.iss.eventorium.solution.dtos.services.*;
 import com.iss.eventorium.solution.services.ServiceService;
 import jakarta.validation.Valid;
@@ -20,9 +22,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/services")
-public class ServiceController {
+public class ServiceController implements ServiceApi {
 
     private final ServiceService service;
+
+    @GetMapping("/top-five-services")
+    public ResponseEntity<Collection<ServiceSummaryResponseDto>> getTopServices(){
+        return new ResponseEntity<>(service.getTopFiveServices(), HttpStatus.OK);
+    }
 
     @GetMapping("/all")
     public ResponseEntity<List<ServiceSummaryResponseDto>> getAllServices() {
@@ -73,15 +80,6 @@ public class ServiceController {
                 .body(service.getImage(id, path));
     }
 
-    @GetMapping("/suggestions")
-    public ResponseEntity<List<ServiceSummaryResponseDto>> getBudgetSuggestions(
-        @RequestParam("categoryId") Long id,
-        @RequestParam("eventId") Long eventId,
-        @RequestParam("price") Double price
-    ) {
-        return ResponseEntity.ok(service.getBudgetSuggestions(id, eventId, price));
-    }
-
     @PostMapping
     public ResponseEntity<ServiceResponseDto> createService(
             @Valid @RequestBody CreateServiceRequestDto createServiceRequestDto
@@ -112,9 +110,10 @@ public class ServiceController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/top-five-services")
-    public ResponseEntity<Collection<ServiceSummaryResponseDto>> getTopServices(){
-        return new ResponseEntity<>(service.getTopServices(), HttpStatus.OK);
+    @DeleteMapping("/{id}/images")
+    public ResponseEntity<Void> deleteImages(@PathVariable("id") Long id, @RequestBody List<RemoveImageRequestDto> removedImages) {
+        service.deleteImages(id, removedImages);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

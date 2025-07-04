@@ -1,5 +1,6 @@
 package com.iss.eventorium.category.controllers;
 
+import com.iss.eventorium.category.api.CategoryProposalApi;
 import com.iss.eventorium.category.dtos.CategoryRequestDto;
 import com.iss.eventorium.category.dtos.CategoryResponseDto;
 import com.iss.eventorium.category.dtos.UpdateStatusRequestDto;
@@ -17,7 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/categories/pending")
-public class CategoryProposalController {
+public class CategoryProposalController implements CategoryProposalApi {
 
     private final CategoryProposalService categoryProposalService;
 

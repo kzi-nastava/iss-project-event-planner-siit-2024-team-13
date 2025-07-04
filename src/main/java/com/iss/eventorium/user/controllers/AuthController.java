@@ -1,6 +1,8 @@
 package com.iss.eventorium.user.controllers;
 
+import com.iss.eventorium.user.api.AuthApi;
 import com.iss.eventorium.user.dtos.auth.*;
+import com.iss.eventorium.user.dtos.user.UpgradeAccountRequestDto;
 import com.iss.eventorium.user.services.AuthService;
 import com.iss.eventorium.user.services.UserService;
 import jakarta.validation.Valid;
@@ -16,17 +18,17 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @CrossOrigin
 @RequestMapping("/api/v1/auth")
-public class AuthController {
+public class AuthController implements AuthApi {
 
     private final UserService userService;
-    private final AuthService authService;
+    private final AuthService service;
 
     @Value("${frontend.url}")
     private String frontendUrl;
 
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserTokenState> createAuthenticationToken(@RequestBody LoginRequestDto request) {
-        return ResponseEntity.ok(authService.login(request));
+        return ResponseEntity.ok(service.login(request));
     }
 
     @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -53,5 +55,10 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.SEE_OTHER)
                 .header("Location", redirectUrl)
                 .build();
+    }
+
+    @PutMapping("/account-role")
+    public ResponseEntity<UserTokenState> upgradeAccount(@Valid @RequestBody UpgradeAccountRequestDto request) {
+        return ResponseEntity.ok(service.upgradeAccount(request));
     }
 }

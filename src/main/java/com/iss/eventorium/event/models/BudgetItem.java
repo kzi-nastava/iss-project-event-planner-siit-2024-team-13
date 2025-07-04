@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
+@ToString
 @Table(name = "budget_items")
 public class BudgetItem {
 
@@ -24,7 +25,7 @@ public class BudgetItem {
     @Column(nullable = false, name = "planned_amount")
     private Double plannedAmount;
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne
     private Solution solution;
 
     @Enumerated(EnumType.STRING)
@@ -33,5 +34,8 @@ public class BudgetItem {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Category category;
 
-    private LocalDateTime purchased;
+    @Enumerated(EnumType.STRING)
+    private BudgetItemStatus status;
+
+    private LocalDateTime processedAt;
 }

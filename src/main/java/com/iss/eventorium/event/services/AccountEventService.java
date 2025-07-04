@@ -4,8 +4,8 @@ import com.iss.eventorium.event.dtos.event.CalendarEventDto;
 import com.iss.eventorium.event.dtos.event.EventSummaryResponseDto;
 import com.iss.eventorium.event.exceptions.EventAlreadyPassedException;
 import com.iss.eventorium.event.mappers.EventMapper;
-import com.iss.eventorium.event.repositories.EventRepository;
 import com.iss.eventorium.event.models.Event;
+import com.iss.eventorium.event.repositories.EventRepository;
 import com.iss.eventorium.event.specifications.EventSpecification;
 import com.iss.eventorium.shared.models.PagedResponse;
 import com.iss.eventorium.user.models.Person;
@@ -62,6 +62,23 @@ public class AccountEventService {
         userRepository.save(user);
     }
 
+    public boolean isUserEligibleToRate(Long eventId) {
+        // NOTE: A user can rate the event only if they marked attendance, the event has already ended, and they haven't already rated it.
+        Event event = eventService.find(eventId);
+        if (event.getDate().isAfter(LocalDate.now())) return false;
+        User user = authService.getCurrentUser();
+        return hasUserAttendedEvent(user, event) && !isRatedByUser(event, user);
+    }
+
+    private boolean hasUserAttendedEvent(User user, Event event) {
+        return user.getPerson().getAttendingEvents().contains(event);
+    }
+
+    public boolean isRatedByUser(Event event, User user) {
+        return event.getRatings().stream()
+                .anyMatch(rating -> rating.getRater().equals(user));
+    }
+
     public void addFavouriteEvent(Long id) {
         Event event = eventService.find(id);
         User user = authService.getCurrentUser();
@@ -104,7 +121,7 @@ public class AccountEventService {
         return mapper.toPagedResponse(repository.findAll(specification, pageable));
     }
 
-    public List<Event> findOrganizerEvents(User organizer) {
+    private List<Event> findOrganizerEvents(User organizer) {
         Specification<Event> specification = EventSpecification.filterByOrganizer(organizer);
         return repository.findAll(specification);
     }

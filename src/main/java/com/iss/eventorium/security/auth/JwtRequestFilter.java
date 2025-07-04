@@ -38,7 +38,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 if (username != null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                    if (Boolean.TRUE.equals(jwtTokenUtil.validateToken(authToken, userDetails))) {
+                    if (jwtTokenUtil.validateToken(authToken, userDetails)) {
                         TokenBasedAuthentication authentication = new TokenBasedAuthentication(userDetails);
                         authentication.setToken(authToken);
                         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -50,6 +50,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write("{\"error\": \"Token expired\"}");
+            return;
+        } catch (Exception ex) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Internal Server Error\"}");
             return;
         }
         chain.doFilter(request, response);

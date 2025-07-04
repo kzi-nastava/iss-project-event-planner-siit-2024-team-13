@@ -2,10 +2,13 @@ package com.iss.eventorium.category.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iss.eventorium.category.dtos.CategoryRequestDto;
+import com.iss.eventorium.util.MockMvcAuthHelper;
 import jakarta.servlet.Filter;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("integration-test")
 class CategoryControllerIntegrationTest {
 
@@ -39,12 +43,15 @@ class CategoryControllerIntegrationTest {
     @Autowired
     private Filter springSecurityFilterChain;
 
-    @BeforeEach
-    void setUp() {
+    private MockMvcAuthHelper authHelper;
+
+    @BeforeAll
+    void setup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .addFilters(springSecurityFilterChain)
                 .build();
+        authHelper = new MockMvcAuthHelper(mockMvc, objectMapper);
     }
 
     @Test
@@ -57,9 +64,7 @@ class CategoryControllerIntegrationTest {
     @ParameterizedTest
     @ValueSource(longs = {1L,5L,10L})
     void testGetCategory_shouldReturnValidCategory(Long id) throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(get("/api/v1/categories/{id}", id)
-                        .header("Authorization", "Bearer " + token))
+        mockMvc.perform(authHelper.authorizedGet(ADMIN_EMAIL, "/api/v1/categories/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id));
     }
@@ -67,9 +72,7 @@ class CategoryControllerIntegrationTest {
     @ParameterizedTest
     @ValueSource(longs = {0L, 11L, 500L})
     void testGetCategory_shouldThrowEntityNotFoundException(Long id) throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(get("/api/v1/categories/{id}", id)
-                        .header("Authorization", "Bearer " + token))
+        mockMvc.perform(authHelper.authorizedGet(ADMIN_EMAIL, "/api/v1/categories/{id}", id))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Category not found"));
     }
@@ -78,11 +81,7 @@ class CategoryControllerIntegrationTest {
     @MethodSource("com.iss.eventorium.category.provider.CategoryProvider#provideInvalidCategories")
     @Transactional
     void testCreateCategory_invalidRequest_shouldThrowValidationError(CategoryRequestDto request) throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(post("/api/v1/categories")
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPost(ADMIN_EMAIL, "/api/v1/categories", request))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", matchesPattern(".* is mandatory")));
     }
@@ -90,12 +89,8 @@ class CategoryControllerIntegrationTest {
     @Test
     @Transactional
     void testCreateCategory_shouldThrowCategoryAlreadyExistsException() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
         CategoryRequestDto request = new CategoryRequestDto("Logistics", "Description");
-        mockMvc.perform(post("/api/v1/categories")
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPost(ADMIN_EMAIL, "/api/v1/categories", request))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Category with name Logistics already exists"));
     }
@@ -104,12 +99,8 @@ class CategoryControllerIntegrationTest {
     @Test
     @Transactional
     void testCreateCategory() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
         CategoryRequestDto request = new CategoryRequestDto("Name", "Description");
-        mockMvc.perform(post("/api/v1/categories")
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPost(ADMIN_EMAIL, "/api/v1/categories", request))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Name"))
                 .andExpect(jsonPath("$.description").value("Description"));
@@ -123,12 +114,8 @@ class CategoryControllerIntegrationTest {
     })
     @Transactional
     void testUpdateCategory(Long id, String name, String description) throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
         CategoryRequestDto request = new CategoryRequestDto(name, description);
-        mockMvc.perform(put("/api/v1/categories/{id}", id)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPut(ADMIN_EMAIL, "/api/v1/categories/{id}", request, id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value(name))
@@ -137,12 +124,8 @@ class CategoryControllerIntegrationTest {
 
     @Test
     void testUpdateCategory_shouldThrowCategoryAlreadyExistsException() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
         CategoryRequestDto request = new CategoryRequestDto("Catering", "New Description");
-        mockMvc.perform(put("/api/v1/categories/{id}", 1L)
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPut(ADMIN_EMAIL, "/api/v1/categories/{id}", request, 1L))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Category with name Catering already exists"));
     }
@@ -150,12 +133,8 @@ class CategoryControllerIntegrationTest {
     @Test
     @Transactional
     void testUpdateCategory_invalidCategory_shouldThrowEntityNotFoundException() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
         CategoryRequestDto request = new CategoryRequestDto("New Category", "New Description");
-        mockMvc.perform(put("/api/v1/categories/{id}", 11L)
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPut(ADMIN_EMAIL, "/api/v1/categories/{id}", request, 11L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Category not found"));
     }
@@ -163,9 +142,7 @@ class CategoryControllerIntegrationTest {
     @Test
     @Transactional
     void testDeleteCategory_shouldThrowCategoryInUseException() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(delete("/api/v1/categories/{id}", 1L)
-                        .header("Authorization", "Bearer " + token))
+        mockMvc.perform(authHelper.authorizedDelete(ADMIN_EMAIL, "/api/v1/categories/{id}", 1L))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message")
                         .value("Unable to delete category because it is currently associated with an active solution."));
@@ -174,9 +151,7 @@ class CategoryControllerIntegrationTest {
     @Test
     @Transactional
     void testDelete_invalidCategory_shouldThrowEntityNotFoundException() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(delete("/api/v1/categories/{id}", 11L)
-                        .header("Authorization", "Bearer " + token))
+        mockMvc.perform(authHelper.authorizedDelete(ADMIN_EMAIL, "/api/v1/categories/{id}", 11L))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("Category not found"));
     }
@@ -184,9 +159,7 @@ class CategoryControllerIntegrationTest {
     @Test
     @Transactional
     void testDeleteCategory() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(delete("/api/v1/categories/{id}", 3L)
-                        .header("Authorization", "Bearer " + token))
+        mockMvc.perform(authHelper.authorizedDelete(ADMIN_EMAIL, "/api/v1/categories/{id}", 3L))
                 .andExpect(status().isNoContent());
     }
 

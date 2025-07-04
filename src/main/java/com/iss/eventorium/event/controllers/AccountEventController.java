@@ -1,5 +1,6 @@
 package com.iss.eventorium.event.controllers;
 
+import com.iss.eventorium.event.api.AccountEventApi;
 import com.iss.eventorium.event.dtos.event.CalendarEventDto;
 import com.iss.eventorium.event.dtos.event.EventSummaryResponseDto;
 import com.iss.eventorium.event.services.AccountEventService;
@@ -9,16 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/account/events")
 @RequiredArgsConstructor
-public class AccountEventController {
+public class AccountEventController implements AccountEventApi {
 
     private final AccountEventService service;
 
@@ -36,6 +34,11 @@ public class AccountEventController {
     public ResponseEntity<Void> markAttendance(@PathVariable Long id) {
         service.markAttendance(id);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/{id}/rating-eligibility")
+    public ResponseEntity<Boolean> getRatingEligibility(@PathVariable Long id) {
+        return ResponseEntity.ok(service.isUserEligibleToRate(id));
     }
 
     @GetMapping("/favourites")

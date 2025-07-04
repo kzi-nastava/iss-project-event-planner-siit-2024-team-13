@@ -17,7 +17,7 @@ public class BudgetItemRequestDto {
     @Positive(message = "Planned amount must be positive")
     private Double plannedAmount;
 
-    @NotNull(message = "Planned amount is mandatory")
+    @NotNull(message = "Item is mandatory")
     private Long itemId;
 
     @NotNull(message = "Category is mandatory")

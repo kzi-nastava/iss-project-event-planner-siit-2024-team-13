@@ -1,11 +1,12 @@
 package com.iss.eventorium.event.specifications;
 
-import com.iss.eventorium.event.models.Event;
 import com.iss.eventorium.event.dtos.event.EventFilterDto;
+import com.iss.eventorium.event.models.Event;
 import com.iss.eventorium.event.models.Privacy;
 import com.iss.eventorium.user.models.User;
 import com.iss.eventorium.user.models.UserBlock;
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
@@ -13,6 +14,11 @@ import java.time.LocalDate;
 public class EventSpecification {
 
     private EventSpecification() {}
+
+    public static Specification<Event> filterFutureEvents(User organizer) {
+        return Specification.where(filterByOrganizer(organizer))
+                .and(hasDateAfter(LocalDate.now()));
+    }
 
     public static Specification<Event> filterBy(EventFilterDto filter, User user) {
         return Specification
@@ -51,6 +57,14 @@ public class EventSpecification {
 
     public static Specification<Event> filterUpcomingEventsByOrganizer(User organizer) {
         return Specification.where(hasOrganizer(organizer)).and(hasDateAfter(LocalDate.now()));
+    }
+
+    public static Specification<Event> filterPassedEvents() {
+        return Specification.where(hasDateBefore(LocalDate.now()));
+    }
+
+    public static Specification<Event> filterPassedEventsByOrganizer(User organizer) {
+        return Specification.where(hasDateBefore(LocalDate.now())).and(hasOrganizer(organizer));
     }
 
     public static Specification<Event> filterByNameForOrganizer(String keyword, User user) {

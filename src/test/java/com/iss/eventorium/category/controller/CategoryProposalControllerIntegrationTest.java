@@ -4,10 +4,13 @@ package com.iss.eventorium.category.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iss.eventorium.category.dtos.CategoryRequestDto;
 import com.iss.eventorium.category.dtos.UpdateStatusRequestDto;
+import com.iss.eventorium.util.MockMvcAuthHelper;
 import jakarta.servlet.Filter;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -31,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("integration-test")
 class CategoryProposalControllerIntegrationTest {
 
@@ -45,20 +49,20 @@ class CategoryProposalControllerIntegrationTest {
     @Autowired
     private Filter springSecurityFilterChain;
 
+    private MockMvcAuthHelper authHelper;
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    void setup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .addFilters(springSecurityFilterChain)
                 .build();
+        authHelper = new MockMvcAuthHelper(mockMvc, objectMapper);
     }
 
     @Test
     void testGetPendingCategories() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(get("/api/v1/categories/pending/all")
-                .header("Authorization", "Bearer " + token))
+        mockMvc.perform(authHelper.authorizedGet(ADMIN_EMAIL, "/api/v1/categories/pending/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(4))
                 .andExpect(jsonPath("$[0].id").value(8))
@@ -71,11 +75,7 @@ class CategoryProposalControllerIntegrationTest {
     @MethodSource("com.iss.eventorium.category.provider.CategoryProposalProvider#provideUpdateCategoryProposal")
     @Transactional
     void testUpdateCategoryStatus(Long categoryId, UpdateStatusRequestDto request) throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(patch("/api/v1/categories/pending/{id}", categoryId)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPatch(ADMIN_EMAIL, "/api/v1/categories/pending/{id}", request, categoryId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(categoryId));
     }
@@ -89,11 +89,7 @@ class CategoryProposalControllerIntegrationTest {
             UpdateStatusRequestDto request,
             String expectedMessage
     ) throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(patch("/api/v1/categories/pending/{id}", categoryId)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPatch(ADMIN_EMAIL, "/api/v1/categories/pending/{id}", request, categoryId))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value(expectedMessage));
 
@@ -102,12 +98,8 @@ class CategoryProposalControllerIntegrationTest {
     @Test
     @Transactional
     void testUpdateCategoryStatus_invalidRequest_shouldThrowValidationError() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
         UpdateStatusRequestDto request = new UpdateStatusRequestDto(null);
-        mockMvc.perform(patch("/api/v1/categories/pending/{id}", 10L)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPatch(ADMIN_EMAIL, "/api/v1/categories/pending/{id}", request, 10L))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", matchesPattern(".* is mandatory")));
@@ -116,12 +108,8 @@ class CategoryProposalControllerIntegrationTest {
     @Test
     @Transactional
     void testUpdateCategory() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
         CategoryRequestDto request = new CategoryRequestDto("Marketing", "New Category Description");
-        mockMvc.perform(put("/api/v1/categories/pending/{id}", 10L)
-                .header("Authorization", "Bearer " + token)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPut(ADMIN_EMAIL, "/api/v1/categories/pending/{id}", request, 10L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(10))
                 .andExpect(jsonPath("$.name").value("Marketing"))
@@ -137,11 +125,7 @@ class CategoryProposalControllerIntegrationTest {
             String expectedMessage,
             int expectedStatus
     ) throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(put("/api/v1/categories/pending/{id}", categoryId)
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPut(ADMIN_EMAIL, "/api/v1/categories/pending/{id}", request, categoryId))
                 .andExpect(status().is(expectedStatus))
                 .andExpect(jsonPath("$.message").value(expectedMessage));
     }
@@ -149,12 +133,8 @@ class CategoryProposalControllerIntegrationTest {
     @Test
     @Transactional
     void testChangeCategory() throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
         CategoryRequestDto request = new CategoryRequestDto("Guest Management", "Handling guest invitations and RSVP");
-        mockMvc.perform(put("/api/v1/categories/pending/{id}/change", 10L)
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPut(ADMIN_EMAIL, "/api/v1/categories/pending/{id}/change", request, 10L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(9L))
                 .andExpect(jsonPath("$.name").value("Guest Management"))
@@ -169,11 +149,7 @@ class CategoryProposalControllerIntegrationTest {
             CategoryRequestDto request,
             String expectedMessage
     ) throws Exception {
-        String token = login(mockMvc, objectMapper, ADMIN_LOGIN);
-        mockMvc.perform(put("/api/v1/categories/pending/{id}/change", categoryId)
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(authHelper.authorizedPut(ADMIN_EMAIL, "/api/v1/categories/pending/{id}/change", request, categoryId))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value(expectedMessage));
     }

@@ -2,16 +2,16 @@ package com.iss.eventorium.security.utils;
 
 import com.iss.eventorium.user.models.Role;
 import com.iss.eventorium.user.models.User;
-import lombok.Getter;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.userdetails.UserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import io.jsonwebtoken.Jwts;
 
 import java.util.Date;
 
@@ -65,14 +65,9 @@ public class JwtTokenUtil {
     }
 
     public String getUsernameFromToken(String token) {
-        try {
-            final Claims claims = getAllClaimsFromToken(token);
-            return (claims != null) ? claims.getSubject() : null;
-        } catch (ExpiredJwtException ex) {
-            throw ex;
-        } catch (Exception e) {
-            return null;
-        }
+        final Claims claims = getAllClaimsFromToken(token);
+        return (claims != null) ? claims.getSubject() : null;
+
     }
 
     public Date getIssuedAtDateFromToken(String token) {
@@ -101,7 +96,7 @@ public class JwtTokenUtil {
         return claims;
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public boolean validateToken(String token, UserDetails userDetails) {
         User user = (User) userDetails;
         final String username = getUsernameFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);

@@ -1,18 +1,17 @@
 package com.iss.eventorium.solution.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 
-import java.util.Objects;
 
-
-@Getter
-@Setter
+@EqualsAndHashCode(callSuper = true)
+@Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +24,7 @@ public class Service extends Solution {
     private ReservationType type;
 
     @Column(nullable = false)
+    @Size(max = 750)
     private String specialties;
 
     @Column(name="reservation_deadline", nullable = false)
@@ -43,26 +43,6 @@ public class Service extends Solution {
     public void restore(Memento memento) {
         setName(memento.getName());
         setPrice(memento.getPrice());
-        setDescription(memento.getDescription());
-        setSpecialties(memento.getSpecialties());
         setDiscount(memento.getDiscount());
-        setEventTypes(memento.getEventTypes());
-        setIsVisible(memento.isVisible());
-        setIsAvailable(memento.isAvailable());
-        setReservationDeadline(memento.getReservationDeadline());
-        setType(memento.getType());
-        setCancellationDeadline(memento.getCancellationDeadline());
-        setMinDuration(memento.getMinDuration());
-        setMaxDuration(memento.getMaxDuration());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), type, specialties, reservationDeadline, cancellationDeadline, minDuration, maxDuration);
     }
 }

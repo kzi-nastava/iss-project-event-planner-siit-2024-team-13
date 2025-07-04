@@ -1,26 +1,35 @@
 package com.iss.eventorium.notifications.controllers;
 
+import com.iss.eventorium.notifications.api.NotificationApi;
 import com.iss.eventorium.notifications.dtos.NotificationResponseDto;
 import com.iss.eventorium.notifications.services.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/notifications")
-public class NotificationController {
+public class NotificationController implements NotificationApi {
 
     private final NotificationService service;
 
     @GetMapping
     public ResponseEntity<List<NotificationResponseDto>> getNotifications() {
         return ResponseEntity.ok(service.getAllNotifications());
+    }
+
+    @GetMapping("/silence")
+    public ResponseEntity<Boolean> getSilenceStatus() {
+        return ResponseEntity.ok(service.getSilenceStatus());
+    }
+
+    @PatchMapping("/silence")
+    public ResponseEntity<Void> silenceNotifications(@RequestParam boolean silence) {
+        service.silenceNotifications(silence);
+        return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/seen")

@@ -1,5 +1,6 @@
 package com.iss.eventorium.interaction.controllers;
 
+import com.iss.eventorium.interaction.api.ChatApi;
 import com.iss.eventorium.interaction.dtos.chat.ChatMessageRequestDto;
 import com.iss.eventorium.interaction.dtos.chat.ChatMessageResponseDto;
 import com.iss.eventorium.interaction.services.ChatService;
@@ -17,7 +18,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("api/v1")
-public class ChatController {
+public class ChatController implements ChatApi {
 
     private final ChatService chatService;
 

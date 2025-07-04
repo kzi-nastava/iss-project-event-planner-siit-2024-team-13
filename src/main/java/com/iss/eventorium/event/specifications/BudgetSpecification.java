@@ -2,18 +2,16 @@ package com.iss.eventorium.event.specifications;
 
 import com.iss.eventorium.event.models.Budget;
 import com.iss.eventorium.event.models.BudgetItem;
+import com.iss.eventorium.event.models.BudgetItemStatus;
 import com.iss.eventorium.event.models.Event;
+import com.iss.eventorium.solution.models.Solution;
 import com.iss.eventorium.user.models.User;
 import com.iss.eventorium.user.models.UserBlock;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class BudgetSpecification {
 
@@ -23,23 +21,32 @@ public class BudgetSpecification {
         return filterBudgetItems(organizer.getId());
     }
 
+    public static Specification<BudgetItem> filterAllBudgetItems(User organizer) {
+        return filterForOrganizer(organizer).and(isProcessed());
+    }
+
+
     private static Specification<BudgetItem> filterBudgetItems(Long organizerId) {
-        return (root, query, criteriaBuilder) -> {
+        return (root, query, cb) -> {
             assert query != null;
 
             Root<Event> eventRoot = query.from(Event.class);
+
             Join<Event, Budget> budgetJoin = eventRoot.join("budget");
-            Join<Budget, BudgetItem> budgetItemJoin = budgetJoin.join("items");
+            Join<Budget, BudgetItem> itemsJoin = budgetJoin.join("items");
 
-            query.where(
-                    criteriaBuilder.and(
-                            criteriaBuilder.equal(eventRoot.get("organizer").get("id"), organizerId),
-                            criteriaBuilder.isNotNull(budgetItemJoin.get("purchased"))
-                    )
-            );
+            Join<BudgetItem, Solution> solutionJoin = itemsJoin.join("solution");
 
-            return query.getRestriction();
+            Predicate linkToRoot = cb.equal(root, itemsJoin);
+            Predicate organizerMatches = cb.equal(eventRoot.get("organizer").get("id"), organizerId);
+            Predicate isVisible = cb.isTrue(solutionJoin.get("isVisible"));
+
+            return cb.and(linkToRoot, organizerMatches, isVisible);
         };
+    }
+
+    private static Specification<BudgetItem> isProcessed() {
+        return (root, query, cb) -> cb.equal(root.get("status"), BudgetItemStatus.PROCESSED);
     }
 
     private static Specification<BudgetItem> filterOutBlockedContent(User blocker) {
@@ -56,15 +63,5 @@ public class BudgetSpecification {
 
             return cb.not(root.get("solution").get("provider").get("id").in(subquery));
         };
-    }
-
-    public static List<BudgetItem> ensureUniqueSolutions(List<BudgetItem> budgetItems) {
-        Map<Long, BudgetItem> uniqueSolutionMap = new HashMap<>();
-
-        for (BudgetItem item : budgetItems) {
-            uniqueSolutionMap.putIfAbsent(item.getSolution().getId(), item);
-        }
-
-        return new ArrayList<>(uniqueSolutionMap.values());
     }
 }

@@ -1,5 +1,6 @@
 package com.iss.eventorium.company.controllers;
 
+import com.iss.eventorium.company.api.CompanyApi;
 import com.iss.eventorium.company.dtos.*;
 import com.iss.eventorium.company.services.CompanyService;
 import com.iss.eventorium.shared.dtos.ImageResponseDto;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @CrossOrigin
 @RequestMapping("/api/v1/companies")
-public class CompanyController {
+public class CompanyController implements CompanyApi {
 
     private final CompanyService service;
 
@@ -53,14 +54,14 @@ public class CompanyController {
     }
 
     @PutMapping("/images")
-    public ResponseEntity<Void> uploadNewImages(@RequestParam(value="newImages") List<MultipartFile> newImages) {
+    public ResponseEntity<Void> uploadNewImages(@RequestParam(value = "newImages") List<MultipartFile> newImages) {
         service.uploadNewImages(newImages);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/images")
-    public ResponseEntity<Void> removeImages(@RequestBody List<RemoveImageRequestDto> removedImages) {
-        service.removeImages(removedImages);
+    public ResponseEntity<Void> deleteImages(@RequestBody List<RemoveImageRequestDto> removedImages) {
+        service.deleteImages(removedImages);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
